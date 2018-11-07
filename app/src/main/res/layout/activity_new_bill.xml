@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".NewBillActivity">
+
+    <EditText
+        android:id="@+id/edit_bill_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Bill Number"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/edit_bill_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Bill Date"
+        android:layout_marginTop="3dp"
+        android:inputType="date" />
+
+    <EditText
+        android:id="@+id/RateperItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Item with Rate and Cost...Press Enter after each Entry."
+        android:inputType="textMultiLine"
+        android:layout_marginTop="5dp"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+    <TextView
+        android:id="@+id/totalamt_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Amount ->"
+        android:layout_marginTop="20dp"
+        android:textSize="15sp"
+        android:textColor="#000"
+        />
+        <EditText
+            android:id="@+id/totamt_editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Enter here"
+            android:layout_marginTop="5dp"
+            android:textColor="#000"
+            android:layout_toRightOf="@id/totalamt_text"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/dueamt_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Amount Due ->"
+            android:layout_marginTop="20dp"
+            android:textSize="15sp"
+            android:textColor="#000"
+            />
+        <EditText
+            android:id="@+id/dueamt_editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Enter here"
+            android:layout_marginTop="5dp"
+            android:textColor="#000"
+            android:layout_toRightOf="@id/dueamt_text"/>
+    </RelativeLayout>
+</LinearLayout>
