@@ -2,8 +2,8 @@ package com.example.android.business_new;
 
 public class Bill {
 
-    private String BillNumber;
-    private String BillDate;
+    private String billNumber;
+    private String billDate;
     private String goods;
     private double totamt;
     private double dueamt;
@@ -13,18 +13,18 @@ public class Bill {
     }
 
     public Bill(String billNumber, String billDate, String goods, double totamt, double dueamt) {
-        BillNumber = billNumber;
-        BillDate = billDate;
+        this.billNumber = billNumber;
+        this.billDate = billDate;
         this.goods = goods;
         this.totamt = totamt;
         this.dueamt = dueamt;
     }
     public String getBillNumber() {
-        return BillNumber;
+        return billNumber;
     }
 
     public String getBillDate() {
-        return BillDate;
+        return billDate;
     }
 
     public String getGoods() {

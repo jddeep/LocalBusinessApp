@@ -51,6 +51,7 @@
             android:hint="Enter here"
             android:layout_marginTop="5dp"
             android:textColor="#000"
+            android:inputType="numberDecimal"
             android:layout_toRightOf="@id/totalamt_text"/>
     </RelativeLayout>
     <RelativeLayout
@@ -73,6 +74,7 @@
             android:hint="Enter here"
             android:layout_marginTop="5dp"
             android:textColor="#000"
+            android:inputType="numberDecimal"
             android:layout_toRightOf="@id/dueamt_text"/>
     </RelativeLayout>
 </LinearLayout>

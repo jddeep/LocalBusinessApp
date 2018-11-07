@@ -53,7 +53,7 @@ android:layout_alignParentRight="true"
 
             android:layout_below="@id/text_view_dueAmt"
             android:textColor="#000"
-            android:textSize="1sp"/>
+            android:textSize="10sp"/>
 
         <TextView
             android:id="@+id/text_view_rateperitem"
@@ -63,7 +63,7 @@ android:layout_alignParentRight="true"
             android:layout_below="@id/text_view_totAmt"
 
             android:textColor="#000"
-            android:textSize="1sp"/>
+            android:textSize="10sp"/>
 
     </RelativeLayout>
 

@@ -95,4 +95,10 @@ public class Bill_Store_Activity extends AppCompatActivity {
         super.onStop();
         adapter.stopListening();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(Bill_Store_Activity.this, MainActivity.class));
+    }
 }

@@ -25,7 +25,7 @@ public class BillAdapter extends FirestoreRecyclerAdapter<Bill, BillAdapter.Bill
          holder.billDatetext.setText(String.valueOf(model.getBillDate()));
          holder.ratePerItem.setText(String.valueOf(model.getGoods())); //*these are hidden in layout
          holder.totamt.setText(String.valueOf((int)model.getTotamt()));// as are not required to see in the UI */
-        holder.dueamt.setText(String.valueOf((int)model.getDueamt()));
+        holder.dueamt.setText("Rs. "+String.valueOf((int)model.getDueamt()));
 
     }
 
