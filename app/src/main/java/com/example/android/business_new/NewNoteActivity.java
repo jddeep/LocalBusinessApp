@@ -1,7 +1,9 @@
 package com.example.android.business_new;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -9,13 +11,19 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class NewNoteActivity extends AppCompatActivity {
     private EditText editTextTitle;
     private EditText editTextDescription;
     private NumberPicker numberPickerPriority;
+
+    private String mUid;
+    private CollectionReference shopListRef=FirebaseFirestore.getInstance().collection("shops");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +71,28 @@ public class NewNoteActivity extends AppCompatActivity {
             Toast.makeText(this, "Please enter a valid Shop name", Toast.LENGTH_SHORT).show();
             return;
         }
-
         CollectionReference notebookRef = FirebaseFirestore.getInstance()
                 .collection("shops");
         notebookRef.add(new Note(title, description, priority));
         Toast.makeText(this, "Shop added to Cloud", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(NewNoteActivity.this, MainActivity.class));
         finish();
+//        Note note = new Note(title,description, priority);
+//        notebookRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+//
+//                    Note note = documentSnapshot.toObject(Note.class);
+//                    mUid = String.valueOf(documentSnapshot.getId());
+//                    Log.d("NewBillAct", "the mUId is "+mUid);
+//
+//                }
+//
+//            }
+//        });
+
+
+
     }
 }

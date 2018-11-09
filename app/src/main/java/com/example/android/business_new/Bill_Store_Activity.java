@@ -20,29 +20,43 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class Bill_Store_Activity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference shopListRef = db.collection("bills");
-
-
+    private CollectionReference billlistRef;
     private BillAdapter adapter;
+    String mUid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bill__store);
 
+        setTitle("Biils List");
+
+        Bundle extras = getIntent().getExtras();
+        mUid = extras.getString("mUid");
+        billlistRef = db.collection("shops").document(mUid).collection("bills");
+
         FloatingActionButton buttonAddNote = findViewById(R.id.button_add_bill);
         buttonAddNote.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Bill_Store_Activity.this, NewBillActivity.class));
+
+               JustforOnClickIntent();
             }
         });
 
         setUpRecyclerView();
     }
 
+    private void JustforOnClickIntent(){
+        Intent intent = new Intent(Bill_Store_Activity.this, NewBillActivity.class);
+        intent.putExtra("mUid",mUid);
+        intent.putExtra("billnumber","x");
+        startActivity(intent);
+    }
+
     private void setUpRecyclerView() {
-        Query query = shopListRef.orderBy("dueamt", Query.Direction.DESCENDING);
+        Query query = billlistRef.orderBy("dueamt", Query.Direction.DESCENDING);
 
 
         FirestoreRecyclerOptions<Bill> options = new FirestoreRecyclerOptions.Builder<Bill>()
@@ -70,6 +84,23 @@ public class Bill_Store_Activity extends AppCompatActivity {
             }
         }).attachToRecyclerView(recyclerView);
 
+
+        adapter.setOnItemClickListener(new BillAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+                    Bill bill = documentSnapshot.toObject(Bill.class);
+                    String id2 = documentSnapshot.getId();
+                    Intent intent = new Intent(Bill_Store_Activity.this, NewBillActivity.class);
+                    intent.putExtra("mUid",mUid);
+                    intent.putExtra("mUid2",id2);
+                    intent.putExtra("billnumber",bill.getBillNumber());
+                    intent.putExtra("billdate",bill.getBillDate());
+                    intent.putExtra("rateperitem",bill.getGoods());
+                    intent.putExtra("totalamt",bill.getTotamt());
+                    intent.putExtra("dueamt",bill.getDueamt());
+                    startActivity(intent);
+            }
+        });
 //        adapter.setOnItemClickListener(new NodeAdapter.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {

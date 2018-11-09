@@ -2,6 +2,7 @@ package com.example.android.business_new;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,13 +20,14 @@ import com.google.firebase.firestore.Query;
 public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference shopListRef = db.collection("shops");
-
     private NodeAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setTitle("Shop Names List");
 
         FloatingActionButton buttonAddNote = findViewById(R.id.button_add_note);
         buttonAddNote.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +73,14 @@ public class MainActivity extends AppCompatActivity {
                 Note note = documentSnapshot.toObject(Note.class);
                 String id = documentSnapshot.getId();
                 String path = documentSnapshot.getReference().getPath();
-                startActivity(new Intent(MainActivity.this, Bill_Store_Activity.class));
+
+//                Intent intent2NewBill = new Intent("INTENT_NAME").putExtra("mUid",id);
+//                LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent2NewBill);
+//                Intent intent = new Intent(MainActivity.this, Bill_Store_Activity.class);
+                Intent intent = new Intent(MainActivity.this, NewBillActivity.class);
+                intent.putExtra("mUid",id);
+                intent.putExtra("billnumber","x");
+                startActivity(intent);
                 finish();
 //                Toast.makeText(MainActivity.this,
 //                        "Position: " + position + " ID: " + id, Toast.LENGTH_SHORT).show();
@@ -89,5 +98,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }
