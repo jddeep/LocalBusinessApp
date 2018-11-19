@@ -1,8 +1,13 @@
 package com.example.android.business_new;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
+import android.text.style.TtsSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,18 +22,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class NewNoteActivity extends AppCompatActivity {
+public class NewNoteActivity extends AppCompatActivity{
     private EditText editTextTitle;
     private EditText editTextDescription;
     private NumberPicker numberPickerPriority;
 
     private String mUid;
     private CollectionReference shopListRef=FirebaseFirestore.getInstance().collection("shops");
+    private PhoneCallerListener innclass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_note);
+//        innclass = new PhoneCallerListener(this);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         setTitle("Add Shop");
@@ -62,6 +69,41 @@ public class NewNoteActivity extends AppCompatActivity {
         }
     }
 
+    private class PhoneCallerListener extends PhoneStateListener{
+        private boolean isPhoneCalling = false;
+
+        public PhoneCallerListener(NewNoteActivity newNoteActivity) {
+
+        }
+
+        @Override
+        public void onCallStateChanged(int state, String phoneNumber) {
+            if(TelephonyManager.CALL_STATE_RINGING == state){
+                Log.i("NewNoteAct ", "Ringing number is "+phoneNumber);
+
+            }
+            if (TelephonyManager.CALL_STATE_OFFHOOK == state){
+                isPhoneCalling =true;
+            }
+            if(TelephonyManager.CALL_STATE_IDLE == state){
+                Log.i("NewNoteAct", "IDLE");
+                if(isPhoneCalling){
+                    Log.i("NewNoteAct","Restartimg App");
+
+                    Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(
+                             getBaseContext().getPackageName()
+                    );
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(i);
+                    isPhoneCalling = false;
+                }
+            }
+        }
+    }
+
+
     private void saveNote() {
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
@@ -94,5 +136,14 @@ public class NewNoteActivity extends AppCompatActivity {
 
 
 
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(NewNoteActivity.this, MainActivity.class));
+        finish();
     }
 }

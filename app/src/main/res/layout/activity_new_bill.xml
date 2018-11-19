@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/new_bill_linearLay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -77,4 +81,14 @@
             android:inputType="numberDecimal"
             android:layout_toRightOf="@id/dueamt_text"/>
     </RelativeLayout>
+    <EditText
+        android:id="@+id/Payments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Payment amount with date and press Enter after each payment.."
+        android:inputType="textMultiLine"
+        android:layout_marginTop="5dp"
+       android:imeOptions="normal"
+        />
 </LinearLayout>
+</ScrollView>

@@ -74,9 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 String id = documentSnapshot.getId();
                 String path = documentSnapshot.getReference().getPath();
 
-//                Intent intent2NewBill = new Intent("INTENT_NAME").putExtra("mUid",id);
-//                LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent2NewBill);
-//                Intent intent = new Intent(MainActivity.this, Bill_Store_Activity.class);
+
                 Intent intent = new Intent(MainActivity.this, NewBillActivity.class);
                 intent.putExtra("mUid",id);
                 intent.putExtra("billnumber","x");

@@ -9,11 +9,18 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,6 +40,7 @@ public class NewBillActivity extends AppCompatActivity {
     private EditText rateperitem;
     private EditText totAmt;
     private EditText dueamt;
+    private EditText payments;
 
     private String billreceivedUid;
     private String receivedUid;
@@ -41,6 +49,8 @@ public class NewBillActivity extends AppCompatActivity {
     private String receivedBillRate;
     private double receivedTotamt;
     private double receivedDueamt;
+    private String receivedPays;
+
 
     private int flag;
 
@@ -58,6 +68,21 @@ public class NewBillActivity extends AppCompatActivity {
         rateperitem = findViewById(R.id.RateperItem);
         totAmt = findViewById(R.id.totamt_editText);
         dueamt =findViewById(R.id.dueamt_editText);
+        payments = findViewById(R.id.Payments);
+
+//       payments.setOnKeyListener(new View.OnKeyListener() {
+//           @Override
+//           public boolean onKey(View v, int keyCode, KeyEvent event) {
+//               if((event.getAction()==KeyEvent.ACTION_DOWN)&&(keyCode == KeyEvent.KEYCODE_ENTER)){
+//                   Log.d("NewBillAct", "Entered");
+//                   payments.setText("Rs. ");
+//                   return true;
+//
+//               }
+//               return false;
+//           }
+//       });
+
 
         Bundle extras = getIntent().getExtras();
         receivedUid = extras.getString("mUid");
@@ -69,6 +94,7 @@ public class NewBillActivity extends AppCompatActivity {
             rateperitem.setText(null);
             totAmt.setText(null);
             dueamt.setText(null);
+            payments.setText(null);
         }else{
             flag = 1;
             billreceivedUid = extras.getString("mUid2");
@@ -76,15 +102,52 @@ public class NewBillActivity extends AppCompatActivity {
             receivedBillRate = extras.getString("rateperitem");
             receivedTotamt = extras.getDouble("totalamt");
             receivedDueamt = extras.getDouble("dueamt");
+            receivedPays = extras.getString("payments");
             billNumber.setText(receivedBillNum);
             billDate.setText(receivedBillDate);
             rateperitem.setText(receivedBillRate);
             totAmt.setText(String.valueOf(receivedTotamt));
             dueamt.setText(String.valueOf(receivedDueamt));
+          payments.setText(receivedPays);
 
         }
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("INTENT_NAME"));
+//    addpaybtn.setOnClickListener(new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            Add_Payment();
+//        }
+//    });
+
     }
+
+    private TextView.OnEditorActionListener editorActionListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            switch (actionId){
+                case EditorInfo.IME_ACTION_NEXT:
+                    payments.setText("Rs. ");
+                    break;
+            }
+            return false;
+        }
+    };
+
+//    private void Add_Payment(){
+//
+//        LinearLayout linearLayout = findViewById(R.id.new_bill_linearLay);
+//        et = new EditText(this);
+//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        et.setLayoutParams(params);
+//        et.setHint("Add payment date and amount");
+//
+//        et.setId(i);
+//
+//        linearLayout.addView(et);
+//        paymentsArr[i] = et.getText().toString();
+//        i++;
+//
+//    }
 
 //    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 //        @Override
@@ -131,12 +194,15 @@ public class NewBillActivity extends AppCompatActivity {
         String rateperItem = rateperitem.getText().toString();
         double totalamt = Double.parseDouble(totAmt.getText().toString());
         double dueamount = Double.parseDouble(dueamt.getText().toString());
+        String paymnts = payments.getText().toString();
+
 
         if (billnumber.trim().isEmpty() || billdate.trim().isEmpty()) {
             Toast.makeText(this, "Please enter a valid bill", Toast.LENGTH_SHORT).show();
             return;
         }
-          Bill bill = new Bill(billnumber,billdate,rateperItem,totalamt,dueamount);
+          Bill bill = new Bill(billnumber,billdate,rateperItem,totalamt,dueamount, paymnts);
+
 //        shopListRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
 //            @Override
 //            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -165,6 +231,7 @@ public class NewBillActivity extends AppCompatActivity {
 
     }
 
+
     private void update(){
 
         DocumentReference billRef = shopListRef.document(receivedUid).collection("bills").document(billreceivedUid);
@@ -173,13 +240,16 @@ public class NewBillActivity extends AppCompatActivity {
         receivedBillRate = rateperitem.getText().toString();
         receivedTotamt = Double.parseDouble(totAmt.getText().toString());
         receivedDueamt = Double.parseDouble(dueamt.getText().toString());
+        receivedPays = payments.getText().toString();
+
 
         billRef.update(
                 "billNumber", receivedBillNum,
                 "billDate", receivedBillDate,
                 "goods", receivedBillRate,
                 "totamt", receivedTotamt,
-                "dueamt", receivedDueamt
+                "dueamt", receivedDueamt,
+                "payments", receivedPays
         ).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -196,6 +266,12 @@ public class NewBillActivity extends AppCompatActivity {
         });
     }
 
-
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent backintent = new Intent(NewBillActivity.this, Bill_Store_Activity.class);
+      backintent.putExtra("mUid",receivedUid);
+        startActivity(backintent);
+      finish();
+    }
 }

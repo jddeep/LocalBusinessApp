@@ -6,12 +6,14 @@
     android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
-    app:cardBackgroundColor="#000">
+
+    app:cardBackgroundColor="#FFEB3B">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp">
+        android:padding="8dp"
+        >
 
         <TextView
             android:id="@+id/text_view_billnumber"
@@ -21,7 +23,7 @@
             android:layout_alignParentLeft="true"
             android:ellipsize="end"
             android:text="Bill Number"
-            android:textColor="#FFF"
+            android:textColor="#000"
             android:fontFamily="sans-serif-medium"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
@@ -32,7 +34,7 @@
             android:layout_alignParentStart="true"
             android:layout_below="@id/text_view_billnumber"
             android:text="Bill Date"
-            android:textColor="#FFF"
+            android:textColor="#000"
             android:textSize="18sp"
             android:layout_alignParentLeft="true" />
         <TextView
@@ -41,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="dueamount"
-            android:textColor="#FFF"
+            android:textColor="#000"
             android:textSize="20sp"/>
 
         <TextView
@@ -52,7 +54,7 @@
 android:layout_alignParentRight="true"
 
             android:layout_below="@id/text_view_dueAmt"
-            android:textColor="#000"
+            android:textColor="#FFEB3B"
             android:textSize="10sp"/>
 
         <TextView
@@ -62,7 +64,7 @@ android:layout_alignParentRight="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/text_view_totAmt"
 
-            android:textColor="#000"
+            android:textColor="#FFEB3B"
             android:textSize="10sp"/>
 
     </RelativeLayout>

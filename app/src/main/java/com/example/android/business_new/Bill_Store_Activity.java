@@ -98,6 +98,7 @@ public class Bill_Store_Activity extends AppCompatActivity {
                     intent.putExtra("rateperitem",bill.getGoods());
                     intent.putExtra("totalamt",bill.getTotamt());
                     intent.putExtra("dueamt",bill.getDueamt());
+                    intent.putExtra("payments", bill.getPayments());
                     startActivity(intent);
             }
         });
