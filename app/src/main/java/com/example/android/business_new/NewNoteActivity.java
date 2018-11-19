@@ -27,7 +27,7 @@ public class NewNoteActivity extends AppCompatActivity{
     private EditText editTextDescription;
     private NumberPicker numberPickerPriority;
 
-    private String mUid;
+
     private CollectionReference shopListRef=FirebaseFirestore.getInstance().collection("shops");
     private PhoneCallerListener innclass;
 
