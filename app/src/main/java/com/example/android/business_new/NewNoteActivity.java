@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ public class NewNoteActivity extends AppCompatActivity{
     private EditText editTextTitle;
     private EditText editTextDescription;
     private NumberPicker numberPickerPriority;
+
 
 
     private CollectionReference shopListRef=FirebaseFirestore.getInstance().collection("shops");
@@ -62,6 +64,7 @@ public class NewNoteActivity extends AppCompatActivity{
                 saveNote();
                 return true;
             case R.id.close_page:
+                startActivity(new Intent(NewNoteActivity.this, MainActivity.class));
                 finish();
                 return true;
             default:

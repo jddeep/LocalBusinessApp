@@ -1,15 +1,20 @@
 package com.example.android.business_new;
 
+import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
@@ -28,19 +34,34 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.sql.Ref;
+import org.w3c.dom.Text;
 
-public class NewBillActivity extends AppCompatActivity {
+import java.sql.Ref;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+public class NewBillActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     private EditText billNumber;
     private EditText billDate;
     private EditText rateperitem;
     private EditText totAmt;
     private EditText dueamt;
-    private EditText payments;
+
+    DocumentReference billRef;
+
+    private FloatingActionButton datepicker;
+    private LinearLayout paymentsLayout;
+
+    private int x = 0;
+    private int i=0;
+
 
     private String billreceivedUid;
     private String receivedUid;
@@ -49,8 +70,15 @@ public class NewBillActivity extends AppCompatActivity {
     private String receivedBillRate;
     private double receivedTotamt;
     private double receivedDueamt;
-    private String receivedPays;
+    private List<String> receivedPays;
+    private List<String> receivedPayDates;
 
+    private double[] doublepaysarray;
+    private double paymentsum=0.0;
+    private double initDueAmt;
+
+    private List<String> pays;
+    private List<String> paydates;
 
     private int flag;
 
@@ -68,7 +96,14 @@ public class NewBillActivity extends AppCompatActivity {
         rateperitem = findViewById(R.id.RateperItem);
         totAmt = findViewById(R.id.totamt_editText);
         dueamt =findViewById(R.id.dueamt_editText);
-        payments = findViewById(R.id.Payments);
+
+       pays = new ArrayList<String>();
+       paydates = new ArrayList<String>();
+
+       doublepaysarray = new double[0];
+
+
+        paymentsLayout = findViewById(R.id.payments_linear_layout);
 
 //       payments.setOnKeyListener(new View.OnKeyListener() {
 //           @Override
@@ -94,7 +129,7 @@ public class NewBillActivity extends AppCompatActivity {
             rateperitem.setText(null);
             totAmt.setText(null);
             dueamt.setText(null);
-            payments.setText(null);
+//            payments.setText(null);
         }else{
             flag = 1;
             billreceivedUid = extras.getString("mUid2");
@@ -102,13 +137,37 @@ public class NewBillActivity extends AppCompatActivity {
             receivedBillRate = extras.getString("rateperitem");
             receivedTotamt = extras.getDouble("totalamt");
             receivedDueamt = extras.getDouble("dueamt");
-            receivedPays = extras.getString("payments");
+            receivedPays = extras.getStringArrayList("pays");
+            receivedPayDates = extras.getStringArrayList("paydates");
+
             billNumber.setText(receivedBillNum);
             billDate.setText(receivedBillDate);
             rateperitem.setText(receivedBillRate);
             totAmt.setText(String.valueOf(receivedTotamt));
             dueamt.setText(String.valueOf(receivedDueamt));
-          payments.setText(receivedPays);
+          if(receivedPays!=null) {
+
+
+
+              for (int index = 0; index < receivedPays.size(); index++) {
+                  LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                  View new_payment = layoutInflater.inflate(R.layout.new_payment_field, null);
+                  paymentsLayout.addView(new_payment, paymentsLayout.getChildCount() - 1);
+
+
+              }
+              for (int shit = 0; shit < paymentsLayout.getChildCount(); shit++) {
+                  View hitview = paymentsLayout.getChildAt(shit);
+                  ViewGroup HitView = (ViewGroup) hitview;
+                  EditText childshitEditview = (EditText) HitView.getChildAt(0);
+                  TextView childshitTextview = (TextView) HitView.getChildAt(1);
+                  Log.d("NewBillAct", shit + "RPAY" + receivedPays.get(shit));
+                  childshitEditview.setText(receivedPays.get(shit));
+                  childshitTextview.setText(receivedPayDates.get(shit));
+              }
+          }
+
+
 
         }
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("INTENT_NAME"));
@@ -119,42 +178,26 @@ public class NewBillActivity extends AppCompatActivity {
 //        }
 //    });
 
+
+
+
+
+
     }
 
-    private TextView.OnEditorActionListener editorActionListener = new TextView.OnEditorActionListener() {
-        @Override
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            switch (actionId){
-                case EditorInfo.IME_ACTION_NEXT:
-                    payments.setText("Rs. ");
-                    break;
-            }
-            return false;
-        }
-    };
+    public void openCalendar(View view){
 
-//    private void Add_Payment(){
-//
-//        LinearLayout linearLayout = findViewById(R.id.new_bill_linearLay);
-//        et = new EditText(this);
-//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        et.setLayoutParams(params);
-//        et.setHint("Add payment date and amount");
-//
-//        et.setId(i);
-//
-//        linearLayout.addView(et);
-//        paymentsArr[i] = et.getText().toString();
-//        i++;
-//
-//    }
 
-//    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//           receivedUid = intent.getStringExtra("mUid");
-//        }
-//    };
+                DialogFragment datePicker = new DatePickerFragment();
+                datePicker.show(getSupportFragmentManager(), "date picker");
+                x = paymentsLayout.getChildCount()-1;
+
+
+
+    }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -194,14 +237,23 @@ public class NewBillActivity extends AppCompatActivity {
         String rateperItem = rateperitem.getText().toString();
         double totalamt = Double.parseDouble(totAmt.getText().toString());
         double dueamount = Double.parseDouble(dueamt.getText().toString());
-        String paymnts = payments.getText().toString();
 
+        initDueAmt = dueamount;
+        Log.d("NewBillAct", "Hithere"+initDueAmt);
+
+       for(int k=0; k<paymentsLayout.getChildCount();k++){
+           View mView = paymentsLayout.getChildAt(k);
+           ViewGroup mView2 = (ViewGroup)mView;
+           View mview = mView2.getChildAt(0);
+           EditText editText = (EditText)mview;
+           pays.add(k, editText.getText().toString());
+       }
 
         if (billnumber.trim().isEmpty() || billdate.trim().isEmpty()) {
             Toast.makeText(this, "Please enter a valid bill", Toast.LENGTH_SHORT).show();
             return;
         }
-          Bill bill = new Bill(billnumber,billdate,rateperItem,totalamt,dueamount, paymnts);
+          Bill bill = new Bill(billnumber,billdate,rateperItem,totalamt,dueamount, pays, paydates);
 
 //        shopListRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
 //            @Override
@@ -222,26 +274,47 @@ public class NewBillActivity extends AppCompatActivity {
       Intent intent = new Intent(NewBillActivity.this,Bill_Store_Activity.class);
        intent.putExtra("mUid",receivedUid);
         startActivity(intent);
-        finish();
-//        CollectionReference billlistRef = FirebaseFirestore.getInstance()
-//                .collection("bills");
-
-//        billlistRef.add(new Bill(billnumber,billdate,rateperItem,totalamt,dueamount));
-
+//        finish();
 
     }
 
 
     private void update(){
 
-        DocumentReference billRef = shopListRef.document(receivedUid).collection("bills").document(billreceivedUid);
+        billRef = shopListRef.document(receivedUid).collection("bills").document(billreceivedUid);
         receivedBillNum = billNumber.getText().toString();
         receivedBillDate = billDate.getText().toString();
         receivedBillRate = rateperitem.getText().toString();
         receivedTotamt = Double.parseDouble(totAmt.getText().toString());
-        receivedDueamt = Double.parseDouble(dueamt.getText().toString());
-        receivedPays = payments.getText().toString();
 
+        doublepaysarray = new double[0];
+        paymentsum=0.0;
+        if(paymentsLayout.getChildCount()!=0) {
+            receivedPays=new ArrayList<String>();
+            receivedPayDates=new ArrayList<String>();
+
+            for (int shit = 0; shit < paymentsLayout.getChildCount(); shit++) {
+                View hitview = paymentsLayout.getChildAt(shit);
+                ViewGroup HitView = (ViewGroup) hitview;
+                EditText childshitEditview = (EditText) HitView.getChildAt(0);
+                TextView childshitTextview = (TextView) HitView.getChildAt(1);
+//                Log.d("NewBillAct", shit + "RPAY" + receivedPays.get(shit));
+                receivedPays.add(shit, childshitEditview.getText().toString());
+                doublepaysarray=new double[receivedPays.size()];
+                doublepaysarray[shit] = Double.parseDouble(receivedPays.get(shit));
+                paymentsum=paymentsum+doublepaysarray[shit];
+                receivedPayDates.add(shit, childshitTextview.getText().toString());
+//                paymentsLayout.removeView((View) hitview);
+            }
+        }else{
+            receivedPays=new ArrayList<String>();
+            receivedPayDates=new ArrayList<String>();
+        }
+
+        Log.d("NewBillAct", "Hithere"+initDueAmt);
+        double tempDue =initDueAmt-paymentsum;
+        dueamt.setText(String.valueOf(tempDue));
+        receivedDueamt = Double.parseDouble(dueamt.getText().toString());
 
         billRef.update(
                 "billNumber", receivedBillNum,
@@ -249,7 +322,9 @@ public class NewBillActivity extends AppCompatActivity {
                 "goods", receivedBillRate,
                 "totamt", receivedTotamt,
                 "dueamt", receivedDueamt,
-                "payments", receivedPays
+                "pays", receivedPays,
+                "paydates", receivedPayDates
+
         ).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -264,6 +339,8 @@ public class NewBillActivity extends AppCompatActivity {
                 }
             }
         });
+
+
     }
 
     @Override
@@ -274,4 +351,52 @@ public class NewBillActivity extends AppCompatActivity {
         startActivity(backintent);
       finish();
     }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        String currdateString = DateFormat.getDateInstance(DateFormat.DEFAULT).format(c.getTime());
+
+        if(x!=0){
+            x=x-1;
+        }
+        View mView = paymentsLayout.getChildAt(x);
+        ViewGroup mView2 = (ViewGroup)mView;
+        View mview = mView2.getChildAt(1);
+
+        Log.d("NewAct","Hey "+x);
+        if(mview instanceof TextView) {
+            TextView textView = (TextView)mview;
+            textView.setText(currdateString);
+            paydates.add(currdateString);
+            i++;
+        }
+
+
+
+    }
+
+    public void onAddField(View view){
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+         View new_payment = layoutInflater.inflate(R.layout.new_payment_field, null);
+        paymentsLayout.addView(new_payment, paymentsLayout.getChildCount()-1);
+
+
+    }
+
+    public void onDelete(View view){
+        paymentsLayout.removeView((View) view.getParent());
+        i--;
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
 }
+

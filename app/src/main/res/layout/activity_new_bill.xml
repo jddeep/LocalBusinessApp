@@ -81,14 +81,68 @@
             android:inputType="numberDecimal"
             android:layout_toRightOf="@id/dueamt_text"/>
     </RelativeLayout>
-    <EditText
-        android:id="@+id/Payments"
+    <!--<EditText-->
+        <!--android:id="@+id/Payments"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:hint="Enter Payment amount with date and press Enter after each payment.."-->
+        <!--android:inputType="textMultiLine"-->
+        <!--android:layout_marginTop="5dp"-->
+       <!--android:imeOptions="normal"-->
+        <!--/>-->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Payment amount with date and press Enter after each payment.."
-        android:inputType="textMultiLine"
-        android:layout_marginTop="5dp"
-       android:imeOptions="normal"
-        />
+        android:id="@+id/payments_linear_layout"
+        android:orientation="vertical">
+
+        <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:orientation="horizontal"-->
+            <!--&gt;-->
+            <!--<EditText-->
+                <!--android:id="@+id/payments"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="3"-->
+                <!--android:hint="Enter payment..."-->
+                <!--android:inputType="numberDecimal"/>-->
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Choose Date"-->
+                <!--android:id="@+id/Date_show_txtView"/>-->
+            <!--<android.support.design.widget.FloatingActionButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/datepicker"-->
+                <!--android:layout_marginTop="5dp"-->
+
+                <!--android:src="@drawable/ic_date_range"/>-->
+            <!--<Button-->
+                <!--android:id="@+id/delete_button"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@android:drawable/ic_delete"-->
+                <!--android:onClick="onDelete"/>-->
+        <!--</LinearLayout>-->
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/add_field_button"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="#555"
+        android:layout_gravity="center"
+        android:onClick="onAddField"
+        android:textColor="#FFF"
+        android:text="Add Payment"
+        android:paddingLeft="5dp"/>
 </LinearLayout>
 </ScrollView>

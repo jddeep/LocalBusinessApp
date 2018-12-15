@@ -18,6 +18,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.io.Serializable;
+
 public class Bill_Store_Activity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference billlistRef;
@@ -98,7 +100,8 @@ public class Bill_Store_Activity extends AppCompatActivity {
                     intent.putExtra("rateperitem",bill.getGoods());
                     intent.putExtra("totalamt",bill.getTotamt());
                     intent.putExtra("dueamt",bill.getDueamt());
-                    intent.putExtra("payments", bill.getPayments());
+                    intent.putExtra("pays", (Serializable) bill.getPays());
+                    intent.putExtra("paydates", (Serializable) bill.getPaydates());
                     startActivity(intent);
             }
         });
